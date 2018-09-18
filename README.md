@@ -1,0 +1,117 @@
+
+[TOC]
+
+__Python2与Python3区别：__
+
+- print
+- /
+
+## Chapter 2 Variables and simple data types
+
+__String__
+
+- str.title()
+- \n\t
+- str.[strip() | rstrip() | lstrip()]
+
+## Chapter 3 List
+
+__List__
+
+- first: 0, last: -1
+- `list.append(val)`
+- `list.insert(index, val)`
+- `del list[index]`
+- `list.pop(null | index)`
+- `list.remove(val)`
+
+__Group List__
+
+- `list.sort(null | reverse = True)`，永久性排序，默认还首字母排序
+- `sorted(list, null | reverse = True)`，临时排序
+- `list.reverse()`，永久性反转
+- `len(list)`
+
+## Chapter 4 Operation List
+
+```python
+magicians = ['alice', 'david', 'carolina']
+
+for m in magicians:
+	print(m)
+
+print(m)
+```
+
+__变量`m`会被提升__
+
+`indent`: 语法错误 / 逻辑错误
+
+__Number List__
+
+- range(1, 5, null | step), [1, 5)
+```python
+for val in range(1, 5):
+	print(val)
+```
+- `list(rang(1, 5))`
+- `min(<Number List>)`
+- `max(<Number List>)`
+- `sum(<Number List>)`
+
+__列表解析__
+```python
+squ = [val**2 for value in range(1, 11)]
+print(squ)
+```
+
+__切片__
+```python
+nums = [1, 2, 3, 4, 5]
+print(nums[0:3])
+```
+
+
+__tuple__
+```python
+n = (2, 4, 6)
+```
+
+`tuple`和`list`非常类似，但是`tuple`一旦初始化就不能修改。
+可以给`tuple`重新赋值，但是不能修改`tuple`的元素值。
+
+## Chapter 5 if
+
+```python
+cars = ['audi', 'bmw', 'subaru', 'toyota']
+
+for car in cars:
+	if car == 'bmw':
+		print(car.upper())
+	else:
+		print(car.title())
+```
+
+- `and`(&&)
+- `or`(||)
+- `val in list`
+- `val not in list`
+
+## Chapter 6 Dict
+
+```python
+n = { 'id': '1', 'name': 'HANZO' }
+print(n)
+print(n['id'])
+print(n.get('id'))
+
+del n['id']
+
+for key, value in n.items():
+	print(key)
+	print(value)
+```
+
+- `dict.items()`
+- `dict.keys()`，获取键，可省略
+
