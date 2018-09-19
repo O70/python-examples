@@ -30,7 +30,20 @@
 # for val in range(1, 5):
 # 	print(val)
 
-digits = [1, 2, 3, 4, 5.7]
-print(min(digits))
-print(max(digits))
-print(sum(digits))
+# digits = [1, 2, 3, 4, 5.7]
+# print(min(digits))
+# print(max(digits))
+# print(sum(digits))
+
+# import python_work
+# python_work.greet_user()
+
+# import python_work as pw
+# pw.greet_user()
+
+# from python_work import greet_user
+# greet_user()
+
+# from python_work import greet_user as gu
+# gu()
+

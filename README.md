@@ -3,8 +3,11 @@
 
 __Python2与Python3区别：__
 
-- print
-- /
+- `print`
+- `/`
+- `input`
+- `class ClassNmae(object)` , P140
+- Inherit `super(SubClassName, self)`/`super()`, P149
 
 ## Chapter 2 Variables and simple data types
 
@@ -114,4 +117,55 @@ for key, value in n.items():
 
 - `dict.items()`
 - `dict.keys()`，获取键，可省略
+- `dict.values()`
+- `set(list)`，去除重复值
 
+## Chpater 7 Input And While
+
+- `input()` and `raw_input()`
+
+## Chapter 8 Function
+
+```python
+def greet_user():
+	"""Hello"""
+	print("Hello")
+
+greet_user()	
+```
+
+- 位置实参
+- 关键字实参
+- 默认值
+
+__Module__
+
+- `import module_name`
+- `from module_name import function_name[, function_name1, function_name2]`
+- `from module_name import function_name as function_alias_name`
+- `import module_name as module_alias_name`
+- `from module_name import *`
+
+## Chapter 9 Class
+
+- 首字母大写，驼峰命名
+- 实例名和模块名采用小写，并在单词之间加下划线
+- `class`中的`function`称为`method`
+- `__init(self)__`, `self`只想实例本身的引用
+
+```python
+class Dog(): # Python2.7: class Dog(object):
+
+	def __init__(self):
+		pass
+```
+
+__Inherit__
+
+__Import Class__
+
+- `form module_name import ClassName`
+- `form module_name import ClassName1, ClassName2, ...`
+- `import module_name`
+- `from module_name import *`
+- 一个`module`中可以有多个`class`
