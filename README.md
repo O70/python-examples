@@ -16,6 +16,7 @@ __String__
 - str.title()
 - \n\t
 - str.[strip() | rstrip() | lstrip()]
+- `str in strs`
 
 ## Chapter 3 List
 
@@ -172,3 +173,65 @@ __Import Class__
 
 ## Chapter 10 File And Exception
 
+__File__
+
+```py
+with open('pi_digits.txt') as file_object:
+	contents = file_object.read()
+	print(contents.rstrip())
+```
+
+```py
+with open('doc/pi_digits.txt') as file_object:	
+	for line in file_object:
+		print(line)
+```
+
+```py
+with open('doc/pi_digits.txt') as file_object:
+	lines = file_object.readlines()
+
+print(lines)
+
+for line in lines: 
+	print(line.rstrip())
+```
+
+```py
+# write-only
+with open('doc/hello.txt', 'w') as file_object:
+	file_object.write("Hello guiwang!\n")
+```
+
+```py
+# read and write
+with open('doc/hello.txt', 'r+') as file_object:
+	file_object.write("Hello guiwang!\n")
+	print(file_object.read())
+```
+
+- `open()`会创建不存在的文件或覆盖
+- `r`读取模式，default
+- `w`写入模式，文件不存在则创建，覆盖式写入
+- `a`附加模式，末尾追加内容，`read-only`
+- `r+`读写模式
+
+__Exception__
+
+```py
+try:
+	print(5/0)
+except ZeroDivisionError:
+	print("You Cant't divide by zero!")	
+```
+
+```py
+try:
+	answer = 5 / 0
+except:
+	print("You Cant't divide by zero!")
+else:
+	print(answer)			
+```
+
+__`else`依赖于`try`代码块成功执行__
