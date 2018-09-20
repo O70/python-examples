@@ -210,10 +210,9 @@ with open('doc/hello.txt', 'r+') as file_object:
 	print(file_object.read())
 ```
 
-- `open()`会创建不存在的文件或覆盖
 - `r`读取模式，default
 - `w`写入模式，文件不存在则创建，覆盖式写入
-- `a`附加模式，末尾追加内容，`read-only`
+- `a`附加模式，末尾追加内容
 - `r+`读写模式
 
 __Exception__
@@ -235,3 +234,11 @@ else:
 ```
 
 __`else`依赖于`try`代码块成功执行__
+
+__JSON__
+
+## Chapter 11 Test
+
+- `unittest`, 标准库
+- **单元测试**用于核实函数的某个方面
+- **测试用例**是一组**单元测试**

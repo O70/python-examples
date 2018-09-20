@@ -7,6 +7,7 @@
 - Quality Assurance, QA
 - Chief Executive Officer, CEO
 - Chief Technology Officer, CTO
+- JavaScript Object Notation, JSON
 
 ## Tools
 
