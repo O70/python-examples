@@ -8,5 +8,12 @@ class FetchUtils(object):
 	def __init__(self):
 		super(FetchUtils, self).__init__()
 
-	def get_text(self):
-		print('fetch....')
+	def get_soup(self, url):
+		response = requests.get(url)
+		return BeautifulSoup(response.text, "html.parser")
+
+	def replace(self, txt):
+		return txt.strip().replace(' ', '').replace('.', '。').replace(',', '，').replace('?', '？').replace('!', '！').replace('\n', '')
+
+	def convert(self, txt):
+		return OpenCC('s2t').convert(txt)

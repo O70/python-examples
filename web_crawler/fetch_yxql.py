@@ -1,26 +1,30 @@
 # -*- coding: utf-8 -*-
 
-# 幼学琼林
+from fetch_utils import FetchUtils
 
-# from fetch_utils import FetchUtils
-# import fetch_utils
+data = {
+	'title': '幼学琼林',
+	'author': '程登吉',
+	'abstract': None,
+	'content': []
+}
 
-# a = FetchUtils()
-# print(a.get_text())
-# print(fetch_utils.FetchUtils.get_text())
+fu = FetchUtils()
+soup = fu.get_soup('https://so.gushiwen.org/search.aspx?value=幼学琼林')
+abstract = soup.find('div', { 'class': 'sonspic' }).find('div', { 'class': 'cont' }).find_all('p')[1]
 
-# b = FetchUtils()
-# b.get_text()
+a = abstract.get_text().replace(abstract.find('a').get_text(), '')
+# print(fu.replace(a))
 
-# n = 0
-# assert n != 0, 'n is zero!'
 
-# import logging
+import re
 
-# logging.basicConfig(level=logging.DEBUG)
-# logging.basicConfig(level=logging.INFO)
-# logging.basicConfig(level=logging.WARNING)
+s = '人之初，性本善，性相近，習相遠。'
+a = re.match(r'[，]', s)
 
-# logging.debug('debug')
-# logging.info('info')
-# logging.warning('warning')
+print(a)
+# print(a.groups())
+print(type(a))
+
+print(re.sub(r'[，]', ',', s))
+print(re.sub(r'[。]', '.', s))
