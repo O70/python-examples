@@ -9,3 +9,5 @@
 - [x] [《声律启蒙》](https://so.gushiwen.org/guwen/book_114.aspx)
 - [ ] 《文字蒙求》
 - [x] [《增广贤文》](https://so.gushiwen.org/guwen/book_69.aspx)
+
+TODO: 内容对比校验
