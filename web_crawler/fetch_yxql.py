@@ -18,7 +18,6 @@ class FetchYxql(FetchUtil):
 		self.set_abstract(sonspic_cont)
 		self.set_content(sonspic_cont)
 		self.to_json('./jsons/youxueqionglin.json', self.__data)
-		# self.to_json('/Users/Guiwang/Workspace/Pythons/chinese-poetry/mengxue/youxueqionglin.json', self.__data)
 
 	def set_abstract(self, sonspic_cont):
 		abstract = None
