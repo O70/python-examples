@@ -17,8 +17,7 @@ class FetchSlqm(FetchUtil):
 		sonspic_cont = soup.find('div', { 'class': 'sonspic' }).find('div', { 'class': 'cont' }).find_all('p')
 		self.set_abstract(sonspic_cont)
 		self.set_content(sonspic_cont)
-		# self.to_json('./jsons/shenglvqimeng.json', self.__data)
-		self.to_json('/Users/Guiwang/Workspace/Pythons/chinese-poetry/mengxue/shenglvqimeng.json', self.__data)
+		self.to_json('./jsons/shenglvqimeng.json', self.__data)
 
 	def set_abstract(self, sonspic_cont):
 		abstract = None
