@@ -6,6 +6,6 @@ from fetch_zgxw import FetchZgxw
 
 url = 'https://so.gushiwen.org'
 
-# FetchYxql(url).processing()
+FetchYxql(url).processing()
 # FetchSlqm(url).processing()
-FetchZgxw(url).processing()
+# FetchZgxw(url).processing()
