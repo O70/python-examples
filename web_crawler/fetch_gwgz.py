@@ -90,12 +90,14 @@ class FetchGwgz(FetchUtil):
 			if isinstance(cs, element.NavigableString):
 				strs = cs.string.strip()
 				if len(strs) > 0:
-					print('strs[%s]: %s' % (cs.name, strs))
-				else:
-					print('00000: %s' % cs.name)
+					# print('strs[%s]: %s' % (cs.name, strs))
+					# print(strs)
+					plist.append(strs)
+				# else:
+				# 	print('00000: %s' % cs.name)
 			else:
-				print(cs.name)
-				self.get_paragraphs(cs.children)
+				# print(cs.name)
+				plist.extend(self.get_paragraphs(cs.children))
 
 		return plist
 
@@ -159,10 +161,16 @@ class FetchGwgz(FetchUtil):
 			contson = cont.find('div', { 'class': 'contson' })
 			plist = self.get_paragraphs(contson.children)
 			# print(plist)
+			self.__data['content'].append({
+				'title': title.string,
+				'content': plist
+			})
 			# for s in contson.children:
 			# 	# if not isinstance(s, element.NavigableString):
 			# 	print(type(s))
 			# 	# if isinstance(s, element.NavigableString):
+
+		self.to_json('./jsons/guwenguanzhi.json', self.__data)
 
 
 fg = FetchGwgz('https://so.gushiwen.org')
