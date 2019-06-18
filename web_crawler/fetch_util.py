@@ -16,7 +16,7 @@ class FetchUtil(object):
 		if not ('http://' in uri or 'https://' in uri):
 			url = self.url + uri
 
-		# self.logging.info(url)
+		self.logging.info(url)
 		response = requests.get(url)
 		return BeautifulSoup(response.text, "html.parser")
 

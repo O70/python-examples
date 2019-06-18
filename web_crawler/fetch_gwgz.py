@@ -8,7 +8,11 @@ class FetchGwgz(FetchUtil):
 		super(FetchGwgz, self).__init__(url)
 		self.__data = {
 			'title': '古文观止',
-			'abstract': None,
+			'abstract': [
+				'《古文观止》是清人吴楚材、吴调侯于康熙三十三年（1694年）选定的古代散文选本。二吴均是浙江绍兴人，长期设馆授徒，该书是清朝康熙年间选编的一部供学塾使用的文学读本，此书是为学生编的教材。',
+				'《古文观止》收自东周至明代的文章222篇，全书12卷，以收散文为主，兼取骈文。题名“观止”是指该书所选的都是名篇佳作，是人们所能读到的尽善尽美的至文了。',
+				'《古文观止》由清代吴兴祚审定并作序，序言中称“以此正蒙养而裨后学”，当时为读书人的启蒙读物。康熙三十四年（1695年）正式镌版印刷。'
+			],
 			'content': []
 		}
 
@@ -20,26 +24,18 @@ class FetchGwgz(FetchUtil):
 	def set_content(self, soup):
 		typeconts = (soup.find('div', { 'class': 'main3' }).find('div', { 'class': 'left' })
 			.find('div', { 'class': 'sons' }).find_all('div', { 'class': 'typecont' }))
-		self.logging.info('%s 共%d卷' % (self.__data['title'], len(typeconts)))
 
-		# c = 0
+		vlen = 0
 		for v in typeconts:
-			# c += 1
-			# if c > 1:
-			# 	break
-
 			title = v.find('div', { 'class': 'bookMl' }).string
 
 			content_list = []
-			# cc = 0
-			for s in v.find_all('span'):
-				# cc += 1
-				# if cc > 1:
-				# 	break
+			tag_span = v.find_all('span')
+			vlen += len(tag_span)
+			for s in tag_span:
 				tag_a = s.find('a')
 
 				sub_soup = self.get_soup(tag_a.attrs['href'])
-				# sub_soup = self.get_soup('https://so.gushiwen.org/shiwenv_27166a9a2aa7.aspx')
 				cont = (sub_soup.find('div', { 'class': 'main3' }).find('div', { 'class': 'left' })
 					.find('div', { 'class': 'sons' }).find('div', { 'class': 'cont' }))
 				author = cont.find('p', { 'class': 'source' }).get_text()
@@ -47,31 +43,18 @@ class FetchGwgz(FetchUtil):
 				paragraphs_list = []
 
 				'''
-				1. len(p) == 0
-				2. len(p) > 0
-				3. p中包含br
+				1. 郑伯克段于鄢 包含多个p,每个p中仅包含文字
+				2. 管晏列传 包含多个p,且p包含br和strong
+				3. 寺人披见文公 仅包含文字
+				4. 谏院题名记 直接包含文字和br
 				'''
 				contson = cont.find('div', { 'class': 'contson' })
-				# for kk in contson.children:
-				# 	# if type(kk) != bs4.element.NavigableString
-				# 	if not isinstance(kk, element.NavigableString):
-				# 		print(type(kk))
-				# 		print((kk))
-				
-				if len(contson.find_all('p')) == 0:
-					print('%s %d' % (tag_a.string, len(contson.find_all('p'))))
-
-				# if len(contson.find_all('p')) > 0:
-				# # print(len(contson.find_all('p')))
-				# 	for p in contson.find_all('p'):
-				# 		print(tag_a.string)
-				# 		paragraphs_list.append(self.replace(p.get_text()))
 
 				content_list.append({
 					'chapter': tag_a.string,
 					'source': s.get_text().replace(tag_a.string, ''), 
 					'author': author,
-					'paragraphs': paragraphs_list
+					'paragraphs': self.get_paragraphs(contson.children)
 				})
 
 			self.__data['content'].append({
@@ -79,28 +62,21 @@ class FetchGwgz(FetchUtil):
 				'content': content_list
 			})
 
-	def get_paragraphs(self, children):
-		# def get_string(tag):
-		# 	if isinstance(tag, element.NavigableString):
-		# 		return tag.string
-		# 	else:
+		self.logging.info('%s 共%d卷 %d篇' % (self.__data['title'], len(typeconts), vlen))
 
+	def get_paragraphs(self, children):
 		plist = []
 		for cs in children:
 			if isinstance(cs, element.NavigableString):
 				strs = cs.string.strip()
 				if len(strs) > 0:
-					# print('strs[%s]: %s' % (cs.name, strs))
-					# print(strs)
 					plist.append(strs)
-				# else:
-				# 	print('00000: %s' % cs.name)
 			else:
-				# print(cs.name)
 				plist.extend(self.get_paragraphs(cs.children))
 
 		return plist
 
+	# Deprecated	
 	def checks(self):
 		"""
 		INFO:root:https://so.gushiwen.org/shiwenv_ee805a0e1c53.aspx # 寺人披见文公: 0
@@ -173,5 +149,5 @@ class FetchGwgz(FetchUtil):
 		self.to_json('./jsons/guwenguanzhi.json', self.__data)
 
 
-fg = FetchGwgz('https://so.gushiwen.org')
-fg.checks()
+# fg = FetchGwgz('https://so.gushiwen.org')
+# fg.checks()
