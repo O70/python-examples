@@ -11,4 +11,4 @@ url = 'https://so.gushiwen.org'
 # FetchSlqm(url).processing()
 # FetchZgxw(url).processing()
 
-# FetchGwgz(url).processing()
+FetchGwgz(url).processing()
