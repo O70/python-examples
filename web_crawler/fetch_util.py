@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from opencc import OpenCC
 
 class FetchUtil(object):
-	def __init__(self, url):
+	def __init__(self, url = None):
 		super(FetchUtil, self).__init__()
 		self.url = url
 		self.logging = logging
