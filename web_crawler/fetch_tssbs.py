@@ -20,6 +20,7 @@ class FetchTssbs(FetchUtil):
 		typeconts = (soup.find('div', { 'class': 'main3' }).find('div', { 'class': 'left' })
 			.find('div', { 'class': 'sons' }).find_all('div', { 'class': 'typecont' }))
 
+		total = 0
 		for tc in typeconts:
 			ml = tc.find('div', { 'class': 'bookMl' })
 
@@ -35,9 +36,13 @@ class FetchTssbs(FetchUtil):
 					'paragraphs': []
 				})
 
+			self.logging.info('%s 共%d首' % (ml.string, len(content_list)))
+			total += len(content_list)
 			self.__data['content'].append({
 				'type': ml.string,
 				'content': content_list
 			})
+
+		self.logging.info('%s 共%d首' % (self.__data['title'], total))
 
 FetchTssbs('https://so.gushiwen.org').processing()
