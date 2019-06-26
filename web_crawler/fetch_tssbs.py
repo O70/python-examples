@@ -8,7 +8,7 @@ class FetchTssbs(FetchUtil):
 		super(FetchTssbs, self).__init__(url)
 		self.__data = {
 			'title': '唐诗三百首',
-			# 'abstract': '',
+			'abstract': '《唐诗三百首》是一部流传很广的唐诗选集。唐朝（618年~907年）二百八十九年间，是中国诗歌发展的黄金时代，云蒸霞蔚，名家辈出，唐诗数量多达五万余首。',
 			'content': []
 		}		
 
@@ -41,11 +41,13 @@ class FetchTssbs(FetchUtil):
 
 				chapter = s.find('a').string.strip()
 				sc = cont.find('h1').string.strip()
+				subchapter = None
 				if chapter != sc:
-					chapter = '%s [%s]' % (chapter, sc)
+					subchapter = sc
 
 				content_list.append({
 					'chapter': chapter,
+					'subchapter': subchapter,
 					'author': author,
 					'paragraphs': paragraphs_list
 				})
