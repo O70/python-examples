@@ -61,4 +61,4 @@ class FetchTssbs(FetchUtil):
 
 		self.logging.info('%s 共%d首' % (self.__data['title'], total))
 
-FetchTssbs('https://so.gushiwen.org').processing()
+# FetchTssbs('https://so.gushiwen.org').processing()
