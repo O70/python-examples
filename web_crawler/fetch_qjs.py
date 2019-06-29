@@ -27,9 +27,18 @@ class FetchQjs(FetchUtil):
 
 		catalog = lc.find('fieldset', { 'class': 'catalog' }).find('div').find_all('a')
 		for c in catalog:
+			sub_soup = self.get_soup(c.attrs['href'])
+			readbox = sub_soup.find('div', { 'id': 'readpage' }).find('div', { 'class': 'readbox' }).find('div', { 'class': 'content' })
+
+			subname = readbox.find_all('h2', { 'class': 'subname' })
+			subauther = readbox.find_all('p', { 'class': 'subauther' })
+			shi = readbox.find_all('blockquote', { 'class': 'shi' })
+			self.logging.info('%s --> subname size: %d, subauthor size: %d, shi size: %d' 
+				% (c.string, len(subname), len(subauther), len(shi)))
+
 			self.__data['content'].append({
 				'type': c.string,
-				'href': c.attrs['href']	
+				'content': []
 			})
 
 FetchQjs('http://www.zggdwx.com').processing()
