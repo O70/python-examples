@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from fetch_util import FetchUtil
+from bs4 import element
 
 # http://www.zggdwx.com/qianjiashi.html
 
@@ -36,9 +37,35 @@ class FetchQjs(FetchUtil):
 			self.logging.info('%s --> subname size: %d, subauthor size: %d, shi size: %d' 
 				% (c.string, len(subname), len(subauther), len(shi)))
 
+			content_list = []
+			for rb in readbox.children:
+				if isinstance(rb, element.NavigableString):
+					continue
+
+				tag_name = rb.name
+				if tag_name == 'h2':
+					content_list.append({ 'chapter': rb.string })
+				elif tag_name == 'p':
+					content_list[len(content_list) - 1]['author'] = rb.string
+				elif tag_name == 'blockquote':
+					# print(content_list[len(content_list) - 1])
+					content_list[len(content_list) - 1]['paragraphs'] = rb.get_text()
+					for s in rb.children:
+						print(s)
+
+			# {
+		 #          "chapter": "行宮",
+		 #          "subchapter": null,
+		 #          "author": "唐代：元稹 ",
+		 #          "paragraphs": [
+		 #            "寥落古行宮，宮花寂寞紅。",
+		 #            "白頭宮女在，閒坐說玄宗。"
+		 #          ]
+		 #        }
+
 			self.__data['content'].append({
 				'type': c.string,
-				'content': []
+				'content': content_list
 			})
 
 FetchQjs('http://www.zggdwx.com').processing()
