@@ -38,20 +38,42 @@ class FetchQjs(FetchUtil):
 				% (c.string, len(subname), len(subauther), len(shi)))
 
 			content_list = []
-			for rb in readbox.children:
-				if isinstance(rb, element.NavigableString):
-					continue
 
-				tag_name = rb.name
-				if tag_name == 'h2':
-					content_list.append({ 'chapter': rb.string })
-				elif tag_name == 'p':
-					content_list[len(content_list) - 1]['author'] = rb.string
-				elif tag_name == 'blockquote':
-					# print(content_list[len(content_list) - 1])
-					content_list[len(content_list) - 1]['paragraphs'] = rb.get_text()
-					for s in rb.children:
-						print(s)
+			first = readbox.find('h2')
+			content_list.append({
+				"chapter": first.string,
+				"author": None,
+				"paragraphs": []
+			})
+			for h in first.next_siblings:
+				if h.name != None:
+					if h.name == 'h2':
+						content_list.append({
+							"chapter": h.string,
+							"author": None,
+							"paragraphs": []
+						})
+					elif h.name == 'p':
+						if content_list[len(content_list) - 1]['author'] == None:
+							content_list[len(content_list) - 1]['author'] = h.string
+					elif h.name == 'blockquote':
+						pass
+
+			# for rb in readbox.children:
+			# 	if isinstance(rb, element.NavigableString):
+			# 		continue
+
+			# 	tag_name = rb.name
+			# 	if tag_name == 'h2':
+			# 		content_list.append({ 'chapter': rb.string })
+			# 	elif tag_name == 'p':
+			# 		content_list[len(content_list) - 1]['author'] = rb.string
+			# 	elif tag_name == 'blockquote':
+			# 		# print(content_list[len(content_list) - 1])
+			# 		content_list[len(content_list) - 1]['paragraphs'] = rb.get_text()
+			# 		for s in rb.children:
+			# 			# print(s)
+			# 			pass
 
 			# {
 		 #          "chapter": "行宮",
