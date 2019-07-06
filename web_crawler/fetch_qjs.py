@@ -56,8 +56,19 @@ class FetchQjs(FetchUtil):
 					elif h.name == 'p':
 						if content_list[len(content_list) - 1]['author'] == None:
 							content_list[len(content_list) - 1]['author'] = h.string
+						else:
+							content_list[len(content_list) - 1]['paragraphs'].append({
+								"subchapter": h.string,
+								"paragraphs": []
+							})
 					elif h.name == 'blockquote':
-						pass
+						for p in h.children:
+							if p.name != None:
+								ll = content_list[len(content_list) - 1]['paragraphs']
+								if len(ll) > 0 and type(ll[len(ll) - 1]) == dict:
+									((ll[len(ll) - 1])['paragraphs']).append(p.get_text())
+								else:
+									content_list[len(content_list) - 1]['paragraphs'].append(p.get_text())
 
 			# for rb in readbox.children:
 			# 	if isinstance(rb, element.NavigableString):
