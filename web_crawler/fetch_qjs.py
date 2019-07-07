@@ -101,4 +101,4 @@ class FetchQjs(FetchUtil):
 				'content': content_list
 			})
 
-FetchQjs('http://www.zggdwx.com').processing()
+# FetchQjs('http://www.zggdwx.com').processing()
