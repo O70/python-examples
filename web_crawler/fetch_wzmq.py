@@ -1,19 +1,38 @@
 # -*- coding: utf-8 -*-
 
-from fetch_util import FetchUtil
+from pdfminer.pdfparser import PDFParser, PDFDocument
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from pdfminer.converter import PDFPageAggregator
+from pdfminer.layout import *
+from pdfminer.pdfinterp import PDFTextExtractionNotAllowed
 
-class FetchWzmq(FetchUtil):
-	"""docstring for FetchWzmq"""
-	def __init__(self, url):
-		super(FetchWzmq, self).__init__(url)
+def parse(path):
+	fp = open(path, 'rb')
+	parser = PDFParser(fp)
+	doc = PDFDocument()
+	parser.set_document(doc)
+	doc.set_parser(parser)
 
-	def processing(self):
-		soup = self.get_soup('/Search_Result.aspx?Type=0&Field=all&Value=文字蒙求')
-		# self.set_content(soup)
-		# self.to_json('./jsons/guwenguanzhi.json', self.__data)		
-		target = soup.find('td', { 'class': 'sreach_result' }).find_all('a')[1]
+	doc.initialize()
 
-		next_soup = self.get_soup('/' + target.attrs['href'])
-		print(next_soup)
+	if not doc.is_extractable:
+		raise PDFTextExtractionNotAllowed
+	else:
+		rsrcmgr = PDFResourceManager()
+		laparams = LAParams()
+		device = PDFPageAggregator(rsrcmgr, laparams = laparams)
 
-FetchWzmq('https://www.gujiguan.com').processing()
+		interpreter = PDFPageInterpreter(rsrcmgr, device)
+
+		num_page, num_image, num_curve, num_figure, num_TextBoxHorizontal = 0, 0, 0, 0, 0
+
+		# doc.get_pages()
+		# print(doc.get_pages())
+		for page in doc.get_pages():
+			num_page += 1
+			print(page)
+
+		print(num_page)
+
+if __name__ == '__main__':
+	parse('./files/wenzimengqiu.pdf')
