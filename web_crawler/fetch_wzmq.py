@@ -24,15 +24,29 @@ def parse(path):
 
 		interpreter = PDFPageInterpreter(rsrcmgr, device)
 
-		num_page, num_image, num_curve, num_figure, num_TextBoxHorizontal = 0, 0, 0, 0, 0
+		num_page, num_image, num_curve, num_figure, num_textboxhorizontal = 0, 0, 0, 0, 0
 
-		# doc.get_pages()
-		# print(doc.get_pages())
 		for page in doc.get_pages():
 			num_page += 1
-			print(page)
+			interpreter.process_page(page)
+			print(interpreter)
 
-		print(num_page)
+			layout = device.get_result()
+			for x in layout:
+				if isinstance(x, LTImage):
+					num_image += 1
+				elif isinstance(x, LTCurve):
+					num_curve += 1
+				elif isinstance(x, LTFigure):
+					num_figure += 1
+				elif isinstance(x, LTTextBoxHorizontal):
+					num_textboxhorizontal += 1
+
+					with open('test.txt', 'a') as f:
+						results = x.get_text()
+						f.write(results + '\n')
+
+		print('Object num: \n', 'Page num: %s\n' % num_page, 'Image num: %s\n' % num_image, 'Curve num: %s\n' % num_curve, 'Horizontal text: %s\n' % num_textboxhorizontal)
 
 if __name__ == '__main__':
 	parse('./files/wenzimengqiu.pdf')
