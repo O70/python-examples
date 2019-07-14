@@ -29,7 +29,7 @@ def parse(path):
 		for page in doc.get_pages():
 			num_page += 1
 			interpreter.process_page(page)
-			print(interpreter)
+			# print(interpreter)
 
 			layout = device.get_result()
 			for x in layout:
