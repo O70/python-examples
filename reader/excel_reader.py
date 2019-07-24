@@ -113,10 +113,6 @@ def read_goods():
 
 print('Total: %d' % len(lists))
 
-# Save goods list
-# print(requests.post('http://10.122.163.75:8030/supermarket/goods/save/init', 
-# 	data = { 'goods': json.dumps(lists, ensure_ascii = False) }))
-
 sheet_images = {}
 
 def process_img():
@@ -159,20 +155,30 @@ def process_img():
 	with open('temp/sheet_images.json', 'w', encoding = 'utf-8') as f:
 		json.dump(sheet_images, f, indent = 2, ensure_ascii = False)
 
-# read_building()
-# read_category()
-process_img()
-# read_goods()
+def upload_image(goods):
+	path = goods.get('img')
+	name = '%s%s' % (goods.get('name'), os.path.splitext(path)[1])
 
-def upload_image():
-	path = 'temp/extracts/xl/media/image1.jpeg'
 	data = {
 		'appName': 'esp-food',
 		'dirPath': 'images'
 	}
 
-	files = { 'file': ('hanzo.jpeg', open(path, 'rb'), 'image/jpeg', {}) }
+	files = { 'file': (name, open(path, 'rb'), 'image/jpeg', {}) }
 	res = requests.post('http://10.122.163.75:8031/file/upload', data = data, files = files)
-	print((json.loads(res.text).get('data').get('filePath')))
+	goods['img'] = json.loads(res.text).get('data').get('filePath')
 
-upload_image()
+# read_building()
+# read_category()
+
+process_img()
+read_goods()
+
+for l in lists:
+	if not l.get('img') is None:
+		# upload_image(l)
+		print('%s %s' % (l.get('name'), l.get('img')))
+
+# Save goods list
+# print(requests.post('http://10.122.163.75:8030/supermarket/goods/save/init', 
+# 	data = { 'goods': json.dumps(lists, ensure_ascii = False) }))
