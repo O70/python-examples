@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import xlrd, pinyin, uuid, json, re, requests
+import xlrd, pinyin, uuid, json, re, requests, os, zipfile
+
+import xml.dom.minidom as xmldom
 
 sql_prefix = 'INSERT INTO base_dict (id, code, name, parent_id, enabled, remark, deleted, spell, initials, level_code) VALUE'
 
@@ -76,7 +78,8 @@ def read_goods():
 		for rx in range(2, sh.nrows):
 			if sh.row(rx)[0].ctype != 0:
 				# if sh.ncols > 4 and sh.row(rx)[4].ctype != 0:
-				# 	print(sh.cell_value(rx, 1) + ', ' + sh.row(rx)[4].value)
+				# if sh.ncols > 4:
+				# 	print(sh.cell_value(rx, 1) + ', ' + str(sh.row(rx)[4].ctype))
 
 				price = sh.cell_value(rx, 3)
 				unit = sh.cell_value(rx, 2)
@@ -88,10 +91,11 @@ def read_goods():
 				else:
 					specs = '%.2f元/%s' % (price, unit)
 
+				img = sheet_images.get('%d_%d' % (i, rx))
 				item = {
-					'numeration': '%s%s' % (numer_perfix, (str(rx-1)).zfill(6)),
+					'numeration': '%s%s' % (numer_perfix, (str(rx - 1)).zfill(6)),
 					'name': sh.cell_value(rx, 1),
-					# 'img': None,
+					'img': img,
 					'price': price,
 					'unit': unit,
 					'specs': specs,
@@ -106,11 +110,56 @@ def read_goods():
 	with open('temp/goods.json', 'w', encoding = 'utf-8') as f:
 		json.dump(datas, f, indent = 2, ensure_ascii = False)
 
-# read_building()
-# read_category()
-read_goods()
 
 print('Total: %d' % len(lists))
 
-print(requests.post('http://10.122.163.75:8030/supermarket/goods/save/init', 
-	data = { 'goods': json.dumps(lists, ensure_ascii = False) }))
+# Save goods list
+# print(requests.post('http://10.122.163.75:8030/supermarket/goods/save/init', 
+# 	data = { 'goods': json.dumps(lists, ensure_ascii = False) }))
+
+sheet_images = {}
+
+def process_img():
+	fpath = 'temp/goods-list-img.zip'
+	ext_dir = 'temp/extracts'
+
+	fzip = zipfile.ZipFile(fpath, 'r')
+	for f in fzip.namelist():
+		fzip.extract(f, ext_dir)
+	fzip.close()
+
+	sheet_rels_path = '%s/xl/worksheets/_rels' % ext_dir
+
+	for file in os.listdir(sheet_rels_path):
+		sheet_index = int(re.findall('\d', file)[0]) - 1
+
+		rs_xml = xmldom.parse(os.path.join(sheet_rels_path, file))
+		relationship = rs_xml.documentElement.getElementsByTagName('Relationship')[0]
+
+		dr_path = relationship.getAttribute('Target').replace('..', '%s/xl' % ext_dir)
+		dr_rels_path = '%s.rels' % dr_path.replace('/drawings/', '/drawings/_rels/')
+
+		dr_xml = xmldom.parse(dr_path)
+		dr_xml_rels = xmldom.parse(dr_rels_path)
+
+		dr_cell_anchors = dr_xml.documentElement.getElementsByTagName('xdr:twoCellAnchor')
+		dr_rs = dr_xml_rels.documentElement.getElementsByTagName('Relationship')
+
+		img_dict = {}
+		for dr in dr_rs:
+			img_dict[dr.getAttribute('Id')] = dr.getAttribute('Target')
+
+		for ca in dr_cell_anchors:
+			row = int(ca.getElementsByTagName('xdr:row')[0].firstChild.data)
+
+			sheet_images['%d_%d' % (sheet_index, row)] = img_dict[ca.getElementsByTagName('a:blip')[0].getAttribute('r:embed')].replace('..', '%s/xl' % ext_dir)
+
+		print('%d %d' % (len(dr_cell_anchors), len(dr_rs)))
+
+	with open('temp/sheet_images.json', 'w', encoding = 'utf-8') as f:
+		json.dump(sheet_images, f, indent = 2, ensure_ascii = False)
+
+# read_building()
+# read_category()
+process_img()
+read_goods()
