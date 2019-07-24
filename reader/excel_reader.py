@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import xlrd, pinyin, uuid, json, re
+import xlrd, pinyin, uuid, json, re, requests
 
 sql_prefix = 'INSERT INTO base_dict (id, code, name, parent_id, enabled, remark, deleted, spell, initials, level_code) VALUE'
 
@@ -52,6 +52,7 @@ def read_category():
 			sh.name, rid, '1', sh.name, '0', pinyin.get(sh.name, format = 'strip'), 
 			pinyin.get_initial(sh.name, ''), rcode + ('%06d' % (s + 1))))
 
+lists = []
 def read_goods():
 	categorys = { 
 		'商品类别': '3e241446adb611e98258000ec6c11a0e', 
@@ -74,36 +75,33 @@ def read_goods():
 
 		for rx in range(2, sh.nrows):
 			if sh.row(rx)[0].ctype != 0:
+				# if sh.ncols > 4 and sh.row(rx)[4].ctype != 0:
+				# 	print(sh.cell_value(rx, 1) + ', ' + sh.row(rx)[4].value)
+
 				price = sh.cell_value(rx, 3)
 				unit = sh.cell_value(rx, 2)
 
 				if sh.row(rx)[3].ctype == 1 and '/' in price:
 					specs = price
 					price = re.findall('\d+\.?\d*', sh.cell_value(rx, 3))[0]
-					print(sh.name + ',' + sh.cell_value(rx, 1) + ', ' + sh.cell_value(rx, 3))
+					# print(sh.name + ',' + sh.cell_value(rx, 1) + ', ' + sh.cell_value(rx, 3))
 				else:
 					specs = '%.2f元/%s' % (price, unit)
 
-				datas[sh.name].append({
+				item = {
 					'numeration': '%s%s' % (numer_perfix, (str(rx-1)).zfill(6)),
 					'name': sh.cell_value(rx, 1),
-					'img': None,
+					# 'img': None,
 					'price': price,
 					'unit': unit,
 					'specs': specs,
-					'amount': 100,
+					'amount': 50,
 					'category': categorys[sh.name],
 					'enabled': 1
-				})
+				}
+				datas[sh.name].append(item)
 
-		# print('***************************')
-		# print('{0} {1} {2} {3}'.format(sh.name, pinyin.get_initial(sh.name, '').upper(), sh.nrows, sh.ncols))
-		# print('---------------------------')
-		# for rx in range(2, sh.nrows):
-		# 	if sh.row(rx)[0].ctype != 0:
-		# 		# print('%s %s %s %s' % ((str(rx-1)).zfill(6), sh.row(rx)[1].value, sh.row(rx)[2].value, sh.row(rx)[3].value))
-		# 		print('%s %s %s %s' % ('%06d' % (rx - 1), sh.row(rx)[1].value, sh.row(rx)[2].value, sh.row(rx)[3].value))
-		# print('***************************')		
+				lists.append(item)
 
 	with open('temp/goods.json', 'w', encoding = 'utf-8') as f:
 		json.dump(datas, f, indent = 2, ensure_ascii = False)
@@ -111,3 +109,8 @@ def read_goods():
 # read_building()
 # read_category()
 read_goods()
+
+print('Total: %d' % len(lists))
+
+print(requests.post('http://10.122.163.75:8030/supermarket/goods/save/init', 
+	data = { 'goods': json.dumps(lists, ensure_ascii = False) }))
