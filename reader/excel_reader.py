@@ -162,4 +162,17 @@ def process_img():
 # read_building()
 # read_category()
 process_img()
-read_goods()
+# read_goods()
+
+def upload_image():
+	path = 'temp/extracts/xl/media/image1.jpeg'
+	data = {
+		'appName': 'esp-food',
+		'dirPath': 'images'
+	}
+
+	files = { 'file': ('hanzo.jpeg', open(path, 'rb'), 'image/jpeg', {}) }
+	res = requests.post('http://10.122.163.75:8031/file/upload', data = data, files = files)
+	print((json.loads(res.text).get('data').get('filePath')))
+
+upload_image()
