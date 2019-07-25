@@ -54,6 +54,9 @@ def read_category():
 			sh.name, rid, '1', sh.name, '0', pinyin.get(sh.name, format = 'strip'), 
 			pinyin.get_initial(sh.name, ''), rcode + ('%06d' % (s + 1))))
 
+# read_building()
+# read_category()
+
 lists = []
 def read_goods():
 	categorys = { 
@@ -92,6 +95,9 @@ def read_goods():
 					specs = '%.2f元/%s' % (price, unit)
 
 				img = sheet_images.get('%d_%d' % (i, rx))
+				# if not img is None:
+				# if i == 6 and rx == 32:
+				# 	print('%s %d_%d' % (sh.cell_value(rx, 1), i, rx))
 				item = {
 					'numeration': '%s%s' % (numer_perfix, (str(rx - 1)).zfill(6)),
 					'name': sh.cell_value(rx, 1),
@@ -110,11 +116,7 @@ def read_goods():
 	with open('temp/goods.json', 'w', encoding = 'utf-8') as f:
 		json.dump(datas, f, indent = 2, ensure_ascii = False)
 
-
-print('Total: %d' % len(lists))
-
 sheet_images = {}
-
 def process_img():
 	fpath = 'temp/goods-list-img.zip'
 	ext_dir = 'temp/extracts'
@@ -150,7 +152,7 @@ def process_img():
 
 			sheet_images['%d_%d' % (sheet_index, row)] = img_dict[ca.getElementsByTagName('a:blip')[0].getAttribute('r:embed')].replace('..', '%s/xl' % ext_dir)
 
-		print('%d %d' % (len(dr_cell_anchors), len(dr_rs)))
+		# print('%d %d' % (len(dr_cell_anchors), len(dr_rs)))
 
 	with open('temp/sheet_images.json', 'w', encoding = 'utf-8') as f:
 		json.dump(sheet_images, f, indent = 2, ensure_ascii = False)
@@ -168,17 +170,22 @@ def upload_image(goods):
 	res = requests.post('http://10.122.163.75:8031/file/upload', data = data, files = files)
 	goods['img'] = json.loads(res.text).get('data').get('filePath')
 
-# read_building()
-# read_category()
+def save_goods():
+	process_img()
+	print('Images: %d' % len(sheet_images))
+	read_goods()
+	print('Total: %d' % len(lists))
 
-process_img()
-read_goods()
+	sc = 0
+	for l in lists:
+		if not l.get('img') is None:
+			upload_image(l)
+			sc += 1
+			# print('%s %s' % (l.get('name'), l.get('img')))
 
-for l in lists:
-	if not l.get('img') is None:
-		# upload_image(l)
-		print('%s %s' % (l.get('name'), l.get('img')))
+	print('Saved images: %d' % sc)
 
-# Save goods list
-# print(requests.post('http://10.122.163.75:8030/supermarket/goods/save/init', 
-# 	data = { 'goods': json.dumps(lists, ensure_ascii = False) }))
+	requests.post('http://10.122.163.75:8030/supermarket/goods/save/init', 
+		data = { 'goods': json.dumps(lists, ensure_ascii = False) })
+
+save_goods()
