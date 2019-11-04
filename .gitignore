@@ -2,4 +2,4 @@
 web_crawler/jsons/*.json
 temp/
 tmp/
-jdbc-*.json
+config-*.json
