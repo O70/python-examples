@@ -1,0 +1,22 @@
+{
+	"jdbc": [
+		{
+			"host": "localhost", 
+			"port": 3306,
+			"user": "root",
+			"password": "mysql",
+			"db": "db1"
+		},
+		{
+			"host": "localhost", 
+			"port": 3306,
+			"user": "root",
+			"password": "mysql",
+			"db": "db2"
+		}
+	],
+	"action": {
+		"upload": "http://localhost:8080/file/upload",
+		"save": "http://localhost:8081/supermarket/goods/save/init"
+	}
+}

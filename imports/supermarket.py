@@ -2,13 +2,19 @@
 
 #  pip install pymysql --proxy http://proxy1.xx.xx:8080 -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
 
-import json, pymysql
+import sys, json, pymysql
 
-jdbc = None
-with open('configs/jdbc-test.json', encoding = 'utf-8') as f:
-	jdbc = json.load(f)
+env = sys.argv[1:]
+if env:
+	env = env[0]
+else:
+	env = 'test'
 
-connect = pymysql.connect(**jdbc[0])
+config = None
+with open('configs/config-' + env + '.json', encoding = 'utf-8') as f:
+	config = json.load(f)
+
+connect = pymysql.connect(**config['jdbc'][0])
 
 cursor = connect.cursor()
 
