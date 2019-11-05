@@ -2,7 +2,7 @@
 
 #  pip install pymysql --proxy http://proxy1.xx.xx:8080 -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
 
-import sys, json, xlrd, pinyin, pymysql
+import sys, os, json, xlrd, pinyin, pymysql
 
 class Supermarket(object):
 	def __init__(self, env):
@@ -13,15 +13,45 @@ class Supermarket(object):
 			self.action = config['action']
 
 	def run(self):
-		self.load()
+		imgs = self.loadImg()
+		self.loadData(imgs)
+
+		# self.load()
 		# print(self.categorys())
 
-	def load(self):
+	def loadImg(self):
+		# jiushui, liangyou, niunai, roudan, sushi
+
+		results = {}
+		dirpath = 'sources/imgs/'
+		imgs = os.listdir(dirpath)
+		print('Total images: %d.' % len(imgs))
+
+		for img in imgs:
+			results[img.split('_')[0]] = '%s%s' % (dirpath, img)
+
+		return results
+
+	def loadData(self, imgs):
 		wb = xlrd.open_workbook('sources/data-2019.10.31.xlsx')
+		total = 0
 		for si in range(wb.nsheets):
 			sh = wb.sheet_by_index(si)
-			# jiushui, liangyou, niunai, roudan, sushi
-			print(sh.name, len(sh.name), pinyin.get(sh.name, format = 'strip'))
+			rows = sh.nrows - 2
+			total += rows
+			print('*********************** %s: %d rows ***********************' % (sh.name, rows))
+			for ri in range(2, sh.nrows):
+				ind = int(sh.cell_value(ri, 0))
+				name = sh.cell_value(ri, 1).strip()
+				imgpath = None
+				try:
+					imgpath = imgs['%s%d' % (pinyin.get(sh.name[:2], format = 'strip'), ind)]
+				except Exception as e:
+					print('Image not found: %s' % name)
+
+				print(name, imgpath)
+
+		print('Total: %d rows.' % total)
 
 	def categorys(self):
 		connect = pymysql.connect(**self.jdbc[0])
