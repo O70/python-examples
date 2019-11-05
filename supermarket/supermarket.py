@@ -13,12 +13,12 @@ class Supermarket(object):
 			self.action = config['action']
 
 	def run(self):
-		# imgs = self.loadImg()
-		# categorys = self.categorys()
-		# rows = self.loadData(imgs, categorys)
-		self.cleaning()
+		imgs = self.loadImage()
+		categorys = self.categorys()
+		rows = self.assembly(imgs, categorys)
+		self.inserts(rows)
 
-	def loadImg(self):
+	def loadImage(self):
 		# jiushui, liangyou, niunai, roudan, sushi
 
 		print('Start loading images...')
@@ -35,7 +35,7 @@ class Supermarket(object):
 
 		return results
 
-	def loadData(self, imgs, categorys):
+	def assembly(self, imgs, categorys):
 		print('Assembly data begins...')
 
 		results = []
@@ -76,8 +76,8 @@ class Supermarket(object):
 
 				row = {
 					'id': str(uuid.uuid1()).replace('-', ''),
-					'name': name,
 					'numeration': '%s%06d' % (prefix, ind),
+					'name': name,
 					'img': imgpath,
 					'price': price,
 					'unit': unit,
@@ -112,27 +112,35 @@ class Supermarket(object):
 	def upload(self):
 		pass
 
-	def save(self):
-		pass
-
-	def cleaning(self):
-		print('Start cleaning old data...')
-
-		tables = ['tbl_goods', 'tbl_goods_cart', 'tbl_goods_order', 'tbl_goods_snapshot']
+	def inserts(self, rows):
+		isql = ('INSERT INTO tbl_goods (id, numeration, name, img, price, unit, '
+			'specs, amount, category, enabled, create_by, create_time) VALUES '
+			'(%(id)s, %(numeration)s, %(name)s, %(img)s, %(price)s, %(unit)s, %(specs)s, '
+			'%(amount)s, %(category)s, %(enabled)s, %(create_by)s, %(create_time)s)')
 
 		connect = pymysql.connect(**self.jdbc[1])
 		cursor = connect.cursor()
 
 		try:
-			for t in tables:
-				c = cursor.execute('DELETE FROM %s' % t)
-				print('Table[%s] has %d rows.' % (t, c))
+			self.cleaning(cursor)
+
+			ir = cursor.executemany(isql, rows)
+			print('Insert %d rows.' % ir)
 			connect.commit()
 		except Exception as e:
 			connect.rollback()
-			print('Delete failed:', e)
+			print('Insert failed: ', e)
 
 		connect.close()
+
+	def cleaning(self, cursor):
+		print('Start cleaning old data...')
+
+		tables = ['tbl_goods', 'tbl_goods_cart', 'tbl_goods_order', 'tbl_goods_snapshot']
+
+		for t in tables:
+			c = cursor.execute('DELETE FROM %s' % t)
+			print('Table[%s] has %d rows.' % (t, c))
 
 		print('Clear end.')
 
