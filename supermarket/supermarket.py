@@ -36,6 +36,12 @@ class Supermarket(object):
 			self.jdbc = config['jdbc']
 			self.action = config['action']
 
+	def run(self):
+		pass
+
+	def load(self):
+		pass
+
 	def categorys(self):
 		connect = pymysql.connect(**self.jdbc[0])
 
@@ -52,6 +58,12 @@ class Supermarket(object):
 
 		return categorys
 
+	def upload(self):
+		pass
+
+	def save(self):
+		pass
+
 if __name__ == '__main__':
 	env = sys.argv[1:]
 	if env:
@@ -59,9 +71,6 @@ if __name__ == '__main__':
 	else:
 		env = 'test'
 
-	print('The data import environment is:', env)
+	print('The data import environment is: %s' % env)
 
-	sm = Supermarket(env)
-	print(sm.__class__)
-	print(sm.__dict__)
-	print(sm.categorys())
+	Supermarket(env).run()
