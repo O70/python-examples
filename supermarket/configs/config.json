@@ -15,8 +15,5 @@
 			"db": "db2"
 		}
 	],
-	"action": {
-		"upload": "http://localhost:8080/file/upload",
-		"save": "http://localhost:8081/supermarket/goods/save/init"
-	}
+	"action": "http://localhost:8080/file/upload"
 }

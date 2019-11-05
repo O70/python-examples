@@ -1,0 +1,19 @@
+{
+	"jdbc": [
+		{
+			"host": "11.11.141.59", 
+			"port": 8066,
+			"user": "root",
+			"password": "MYSQLPTRkygl@59",
+			"db": "esp_admin"
+		},
+		{
+			"host": "11.11.141.59", 
+			"port": 8066,
+			"user": "root",
+			"password": "MYSQLPTRkygl@59",
+			"db": "esp_food"
+		}
+	],
+	"action": "http://fs:PTRfs413@11.11.141.59:30130/file/upload"
+}

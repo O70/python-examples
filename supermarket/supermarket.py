@@ -2,7 +2,7 @@
 
 #  pip install pymysql --proxy http://proxy1.xx.xx:8080 -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
 
-import sys, os, json, xlrd, pinyin, uuid, datetime, pymysql
+import sys, os, json, xlrd, requests, pinyin, uuid, datetime, pymysql
 
 class Supermarket(object):
 	def __init__(self, env):
@@ -16,6 +16,7 @@ class Supermarket(object):
 		imgs = self.loadImage()
 		categorys = self.categorys()
 		rows = self.assembly(imgs, categorys)
+		rows = self.upload(rows)
 		self.inserts(rows)
 
 	def loadImage(self):
@@ -109,10 +110,29 @@ class Supermarket(object):
 
 		return categorys
 
-	def upload(self):
-		pass
+	def upload(self, rows):
+		print('Start uploading images...')
+
+		data = {
+			'appName': 'esp-food',
+			'dirPath': 'images/supermarket'
+		}
+
+		for r in rows:
+			path = r['img']
+			if path:
+				print('Uploading: %s' % path)
+				files = { 'file': (path.split('/')[-1], open(path, 'rb'), 'image/jpeg', {}) }
+				res = requests.post(self.action, data = data, files = files)
+				r['img'] = json.loads(res.text).get('data').get('filePath')
+
+		print('End of upload.')
+
+		return rows
 
 	def inserts(self, rows):
+		print('Start inserting data...')
+
 		isql = ('INSERT INTO tbl_goods (id, numeration, name, img, price, unit, '
 			'specs, amount, category, enabled, create_by, create_time) VALUES '
 			'(%(id)s, %(numeration)s, %(name)s, %(img)s, %(price)s, %(unit)s, %(specs)s, '
@@ -132,6 +152,8 @@ class Supermarket(object):
 			print('Insert failed: ', e)
 
 		connect.close()
+
+		print('End of insertion.')
 
 	def cleaning(self, cursor):
 		print('Start cleaning old data...')
