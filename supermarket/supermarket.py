@@ -13,9 +13,10 @@ class Supermarket(object):
 			self.action = config['action']
 
 	def run(self):
-		imgs = self.loadImg()
-		categorys = self.categorys()
-		rows = self.loadData(imgs, categorys)
+		# imgs = self.loadImg()
+		# categorys = self.categorys()
+		# rows = self.loadData(imgs, categorys)
+		self.cleaning()
 
 	def loadImg(self):
 		# jiushui, liangyou, niunai, roudan, sushi
@@ -87,7 +88,6 @@ class Supermarket(object):
 					'create_by': 'admin',
 					'create_time': datetime.datetime.now()
 				}
-				# print(row)
 				results.append(row)
 
 		print('End of assembly data. Total: %d rows.' % total)
@@ -96,7 +96,6 @@ class Supermarket(object):
 
 	def categorys(self):
 		connect = pymysql.connect(**self.jdbc[0])
-
 		cursor = connect.cursor()
 
 		cursor.execute("SELECT id, name FROM base_dict WHERE PARENT_ID = \
@@ -115,6 +114,27 @@ class Supermarket(object):
 
 	def save(self):
 		pass
+
+	def cleaning(self):
+		print('Start cleaning old data...')
+
+		tables = ['tbl_goods', 'tbl_goods_cart', 'tbl_goods_order', 'tbl_goods_snapshot']
+
+		connect = pymysql.connect(**self.jdbc[1])
+		cursor = connect.cursor()
+
+		try:
+			for t in tables:
+				c = cursor.execute('DELETE FROM %s' % t)
+				print('Table[%s] has %d rows.' % (t, c))
+			connect.commit()
+		except Exception as e:
+			connect.rollback()
+			print('Delete failed:', e)
+
+		connect.close()
+
+		print('Clear end.')
 
 if __name__ == '__main__':
 	env = sys.argv[1:]
