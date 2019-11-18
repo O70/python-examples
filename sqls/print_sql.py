@@ -137,9 +137,9 @@ def user(orgs):
 def companys():
 	levelid = ['d7d7682b-3ffb-4c04-a34c-549463b8ae36', 'f67a57b5-0c2e-4155-86f8-1199e2214973']
 
-	sql = "INSERT INTO BID_COMPANY(ID, CREATE_DATE, CREATE_USER_ID, LEVEL_ID, NAME) VALUES ('%s', TO_DATE('2019-11-16 17:15:11', 'yyyy-MM-dd HH:mi:ss'), 'xsy', '%s', '%s')"
+	sql = "INSERT INTO BID_COMPANY(ID, CREATE_DATE, CREATE_USER_ID, LEVEL_ID, NAME) VALUES ('%s', TO_DATE('2019-11-16 17:15:11', 'yyyy-MM-dd HH24:mi:ss'), 'xsy', '%s', 'Company-%03d');"
 
 	for x in range(35):
-		print(sql % (str(uuid.uuid1()).replace('-', ''), 
-			levelid[random.choice(range(2))], 'Company-%03d' % (x + 1)) 
+		print(sql % (str(uuid.uuid1()).replace('-', ''), levelid[random.choice(range(2))], x + 1))
+
 companys()
