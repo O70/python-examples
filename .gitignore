@@ -4,3 +4,4 @@ temp/
 tmp/
 config-*.json
 ~$data-2019.10.31.xlsx
+gitlab/tmp/
