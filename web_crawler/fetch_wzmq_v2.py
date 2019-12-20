@@ -9,7 +9,9 @@ class FetchWzmq(FetchUtil):
 		super(FetchWzmq, self).__init__(url)
 		self.__data = {
 			'title': '文字蒙求',
-			'abstract': [],
+			'author': '王筠（1784-1854），字贯山，号菉友。清山东安丘人，道光元年（1821）举人，曾任陕西乡宁知县。他的著作有《说文释例》《说文解字句读》《文字蒙求》等。',
+			'abstract': '《文字蒙求》包括天地類之純形；人類之純形；動物之純形；植物之純形；衣服器械屋宇之純形；一字象兩物形者；由象形字省之仍是象形者；避它字而變其形者；物多此形因兼其用以象之者；其形不能顯白因加同類字以定之；以會意定象形而别加一形者等内容。',
+			'preface': [],
 			'content': []
 		}
 
@@ -29,7 +31,7 @@ class FetchWzmq(FetchUtil):
 		for i in range(alen):
 			for x in soup_tr[i].contents[1].children:
 				if x.string:
-					self.__data['abstract'].append(x.string)
+					self.__data['preface'].append(x.string)
 
 		for i in range(alen, total):
 			tr = soup_tr[i]
