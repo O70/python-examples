@@ -8,7 +8,7 @@ target_path = 'tmp/train_data.json'
 
 def main():
 	with open(source_path, encoding = 'utf-8') as f:
-		print(f.readlines()
+		print(f.readlines())
 
 if __name__ == '__main__':
 	main()
