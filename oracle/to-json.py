@@ -77,7 +77,7 @@ with conn.cursor() as cursor:
 			# item['rows'] = rows
 			# data.append(item)
 
-			with open('./tmp/%s.json' % table, 'w', encoding = 'UTF-8') as f:
+			with open('./tmp.json/%s.json' % table, 'w', encoding = 'UTF-8') as f:
 				json.dump(rows, f, sort_keys = False, indent = 2, ensure_ascii = False)
 		except Exception as e:
 			print('[ERROR]', '%s[%s]' % (e, table))
