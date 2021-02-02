@@ -3,6 +3,27 @@
 import cx_Oracle as cx
 import json, config, chardet
 
+# conn = None
+# try:
+# 	# , encoding = 'UTF-8'
+#     conn = cx.connect(config.username, config.password, config.dsn)
+#     # print(conn.version)
+
+#     cur = conn.cursor()
+#     cur.execute('select * from user_info')
+#     # print(a)
+#     res = cur.fetchall()
+#     # print(type(res))
+#     for row in res:
+#     	print(type(row))
+#     # for row in a:
+#     # 	print(type(row))
+# except cx.Error as error:
+#     print(error)
+# finally:
+#     if conn:
+#         conn.close()
+
 def store(table, cursor):
 	columns = []
 	for col in cursor.description:
@@ -21,9 +42,9 @@ def store(table, cursor):
 			# else:
 			# 	dictRow[columns[ind]] = val
 			col = columns[ind]
-			if col[1] == cx.DB_TYPE_RAW:
-				dictRow[col[0]] = 'RAW-TYPE'
-			elif col[1] == cx.DB_TYPE_TIMESTAMP:
+			# if col[1] == cx.DB_TYPE_RAW:
+			# 	dictRow[col[0]] = 'RAW-TYPE'
+			if col[1] == cx.DB_TYPE_TIMESTAMP:
 				if val:
 					# print(col[0], val, type(val), val.strftime('%Y-%m-%d %H:%M:%S'))
 					val = val.strftime('%Y-%m-%d %H:%M:%S')
